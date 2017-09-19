@@ -1,0 +1,22 @@
+{
+    "name": "nberces/phputils",
+    "type": "library",
+    "description": "A collection of utility classes to help with the day-to-day stuff.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Berces",
+            "email": "nicberces@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "symfony/options-resolver": "^3.3"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "PHPUtils\\": "src/"
+        }
+    }
+}
