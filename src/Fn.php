@@ -24,7 +24,7 @@ class Fn
         if (!is_array($var)
             && !($var instanceof Traversable)
         ) {
-            $var = [$useVar];
+            $var = [$var];
         }
 
         foreach ($var as $idx => $param) {
