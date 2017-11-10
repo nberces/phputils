@@ -438,7 +438,7 @@ class Fn
             if (empty($var)) {
                 $var = null;
             } else {
-                $var = $var[0];
+                $var = reset($var);
             }
         } elseif ($var instanceof Traversable
             && $var instanceof Countable
