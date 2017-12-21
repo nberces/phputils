@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPUtils;
+namespace NBerces\PHPUtils;
 
 class DateTime extends \DateTime
 {
