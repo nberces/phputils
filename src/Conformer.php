@@ -2,45 +2,18 @@
 
 namespace NBerces\PHPUtils;
 
-use Countable;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use InvalidArgumentException;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Traversable;
 
-class Fn
+class Conformer
 {
-    const CCTYPE_AMERICANEXPRESS = 'amex';
-    const CCTYPE_DINERSCLUB = 'dc';
-    const CCTYPE_JCB = 'jcb';
-    const CCTYPE_MASTERCARD = 'mc';
-    const CCTYPE_VISA = 'visa';
-
-    public static function apply($var, $callback)
-    {
-        if (!is_array($var)
-            && !($var instanceof Traversable)
-        ) {
-            $var = [$var];
-        }
-
-        foreach ($var as $idx => $param) {
-            call_user_func($callback, $param, $idx);
-        }
-    }
-
-    public static function applyToOne($var, $callback)
-    {
-        static::apply(static::singularise($var), $callback);
-    }
-
-    public static function conformToBoolean($bool, array $options = [])
+    public static function toBoolean($bool, array $options = [])
     {
         $resolver = new OptionsResolver();
-        static::configureConformToBooleanOptions($resolver);
+        static::configureToBooleanOptions($resolver);
         $options = $resolver->resolve($options);
 
         if (is_int($bool)) {
@@ -71,10 +44,10 @@ class Fn
         return $bool;
     }
 
-    public static function conformToDateTime($dttm, array $options = [])
+    public static function toDateTime($dttm, array $options = [])
     {
         $resolver = new OptionsResolver();
-        static::configureConformToDateTimeOptions($resolver);
+        static::configureToDateTimeOptions($resolver);
         $options = $resolver->resolve($options);
 
         if (is_string($dttm)) {
@@ -95,11 +68,11 @@ class Fn
 
             extract($dttm, EXTR_IF_EXISTS);
 
-            static::conformToInteger($day, ['default' => 0, 'maxValue' => 31, 'minValue' => 1]);
-            static::conformToInteger($hour, ['default' => 0, 'maxValue' => 23, 'minValue' => 0]);
-            static::conformToInteger($minute, ['default' => 0, 'maxValue' => 59, 'minValue' => 0]);
-            static::conformToInteger($month, ['default' => 0, 'maxValue' => 12, 'minValue' => 1]);
-            static::conformToInteger($year, ['default' => 0]);
+            static::toInteger($day, ['default' => 0, 'maxValue' => 31, 'minValue' => 1]);
+            static::toInteger($hour, ['default' => 0, 'maxValue' => 23, 'minValue' => 0]);
+            static::toInteger($minute, ['default' => 0, 'maxValue' => 59, 'minValue' => 0]);
+            static::toInteger($month, ['default' => 0, 'maxValue' => 12, 'minValue' => 1]);
+            static::toInteger($year, ['default' => 0]);
 
             if (0 < $day
                 && 0 < $month
@@ -130,12 +103,12 @@ class Fn
         return $dttm;
     }
 
-    public static function conformToEmailAddress($address)
+    public static function toEmailAddress($address)
     {
         $resolver = new OptionsResolver();
-        static::configureConformToEmailAddressOptions($resolver);
+        static::configureToEmailAddressOptions($resolver);
         $options = $resolver->resolve($options);
-        $address = static::conformToString(
+        $address = static::toString(
             $address,
             [
                 'default' => '',
@@ -144,17 +117,17 @@ class Fn
             ]
         );
 
-        if (!static::isValidEmailAddress($address)) {
+        if (false === filter_var($address, FILTER_VALIDATE_EMAIL)) {
             return $options['default'];
         }
 
         return $address;
     }
 
-    public static function conformToFloat($num, array $options = [])
+    public static function toFloat($num, array $options = [])
     {
         $resolver = new OptionsResolver();
-        static::configureConformToFloatOptions($resolver);
+        static::configureToFloatOptions($resolver);
         $options = $resolver->resolve($options);
 
         if (is_numeric($num)) {
@@ -190,10 +163,10 @@ class Fn
         return $num;
     }
 
-    public static function conformToInteger($num, array $options = [])
+    public static function toInteger($num, array $options = [])
     {
         $resolver = new OptionsResolver();
-        static::configureConformToIntegerOptions($resolver);
+        static::configureToIntegerOptions($resolver);
         $options = $resolver->resolve($options);
 
         if (is_numeric($num)) {
@@ -229,12 +202,12 @@ class Fn
         return $num;
     }
 
-    public static function conformToPlainText($text, array $options = [])
+    public static function toPlainText($text, array $options = [])
     {
         $resolver = new OptionsResolver();
-        static::configureConformToPlainTextOptions($resolver);
+        static::configureToPlainTextOptions($resolver);
         $options = $resolver->resolve($options);
-        $text = static::conformToString($text, ['default' => '']);
+        $text = static::toString($text, ['default' => '']);
 
         if (!empty($text)) {
             $whitespace = '~~@~~';
@@ -270,13 +243,13 @@ class Fn
             $text = preg_replace('/^[[:space:]]{2,}/mu', "\n", $text);
         }
 
-        return static::conformToString($text, $options);
+        return static::toString($text, $options);
     }
 
-    public static function conformToString($str, array $options = [])
+    public static function toString($str, array $options = [])
     {
         $resolver = new OptionsResolver();
-        static::configureConformToStringOptions($resolver);
+        static::configureToStringOptions($resolver);
         $options = $resolver->resolve($options);
 
         if (is_numeric($str)
@@ -319,144 +292,7 @@ class Fn
         return $str;
     }
 
-    public static function isValidCreditCardNumber($num, array $options = [])
-    {
-        $resolver = new OptionsResolver();
-        static::configureIsValidCreditCardNumberOptions($resolver);
-        $options = $resolver->resolve($options);
-
-        $num = preg_replace('/[^0-9]/', '', static::conformToString($num, ['deafult' => '']));
-        $isValid = true;
-
-        switch ($options['CCType']) {
-            case CCTYPE_AMERICANEXPRESS:
-                $isValid = (bool) preg_match('/^3[47][0-9]{13}$/', $num);
-                break;
-            case CCTYPE_DINERSCLUB:
-                $isValid = (bool) preg_match('/^3(0[0-5]|[68][0-9])[0-9]{11}$/', $num);
-                break;
-            case CCTYPE_JCB:
-                $isValid = (bool) preg_match('/^(3[0-9]{4}|2131|1800)[0-9]{11}$/', $num);
-                break;
-            case CCTYPE_MASTERCARD:
-                $isValid = (bool) preg_match('/^5[1-5][0-9]{14}$/', $num);
-                break;
-            case CCTYPE_VISA:
-                $isValid = (bool) preg_match('/^4[0-9]{12}([0-9]{3})?$/', $num);
-                break;
-            default:
-                throw new InvalidArgumentException();
-        }
-
-        if ($isValid
-            && $options['performLuhnCheck']
-        ) {
-            $luhnCheckTotal = 0;
-
-            for ($idx = 0; $idx < strlen($number); $idx++) {
-                $digit = $number[$idx];
-                if ($idx % 2 == (strlen($number) % 2)) {
-                    $digit *= 2;
-                    if ($digit > 9) {
-                        $digit -= 9;
-                    }
-                }
-
-                $luhnCheckTotal += $digit;
-            }
-
-            if ($luhnCheckTotal % 10 != 0) {
-                $isValid = false;
-            }
-        }
-
-        return $isValid;
-    }
-
-    public static function isValidEmailAddress($str)
-    {
-        if (1 == preg_match('/^[^@\s]+@([-a-z0-9]+\.)+[a-z]{2,}$/i', $str)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Helps determine the correct return-type for functions that perform
-     * operations equally on both a single value or a collection of values.
-     * Typically, a function that accepts a single-value argument will want
-     * to return a single value; a function that accepts a collection of values
-     * will want to return a collection.
-     *
-     * This function inspects $basedOn to determine whether to return
-     * a single value or a collection of values, and then returns the appropriate
-     * type using $subject. Below is a summary of expected behaviour:
-     *
-     * $basedOn (singular), $subject (singular) => $subject
-     * $basedOn (singular), $subject (collection) => $subject[0]
-     * $basedOn (collection), $subject (singular) => [$subject]
-     * $basedOn (collection), $subject (collection) => $subject
-     *
-     * @param mixed $basedOn
-     * @param mixed $subject
-     *
-     * @return mixed|[]
-     */
-    public static function matchForm($basedOn, $subject)
-    {
-        if (!is_array($basedOn)
-            && !($basedOn instanceof Traversable)
-        ) {
-            /**
-             * $basedOn determined to be of singular-form; return $subject
-             * in singular form.
-             */
-            return static::singularise($subject);
-        }
-
-        if (!is_array($subject)
-            && !($subject instanceof Traversable)
-        ) {
-            /**
-             * $basedOn determined to be of collective-form, $subject determined
-             * to be of singular-form; return $subject in collective form.
-             */
-            return [$subject];
-        }
-
-        /**
-         * $basedOn determined to be of collective-form, $subject determined
-         * to be of collective-form; return $subject as-is.
-         */
-        return $subject;
-    }
-
-    public static function singularise($var)
-    {
-        if (is_array($var)) {
-            if (empty($var)) {
-                $var = null;
-            } else {
-                $var = reset($var);
-            }
-        } elseif ($var instanceof Traversable
-            && $var instanceof Countable
-        ) {
-            if (0 == count($var)) {
-                $var = null;
-            } else {
-                foreach ($var as $singleVar) {
-                    $var = $singleVar;
-                    break;
-                }
-            }
-        }
-
-        return $var;
-    }
-
-    protected static function configureCommonConformOptions(OptionsResolver $resolver)
+    protected static function configureCommonToOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
             [
@@ -465,14 +301,14 @@ class Fn
         );
     }
 
-    protected static function configureConformToBooleanOptions(OptionsResolver $resolver)
+    protected static function configureToBooleanOptions(OptionsResolver $resolver)
     {
-        static::configureCommonConformOptions($resolver);
+        static::configureCommonToOptions($resolver);
     }
 
-    protected static function configureConformToDateTimeOptions(OptionsResolver $resolver)
+    protected static function configureToDateTimeOptions(OptionsResolver $resolver)
     {
-        static::configureCommonConformOptions($resolver);
+        static::configureCommonToOptions($resolver);
 
         $resolver->setDefaults(
             [
@@ -497,14 +333,14 @@ class Fn
         );
     }
 
-    protected static function configureConformToEmailAddressOptions(OptionsResolver $resolver)
+    protected static function configureToEmailAddressOptions(OptionsResolver $resolver)
     {
-        static::configureCommonConformOptions($resolver);
+        static::configureCommonToOptions($resolver);
     }
 
-    protected static function configureConformToFloatOptions(OptionsResolver $resolver)
+    protected static function configureToFloatOptions(OptionsResolver $resolver)
     {
-        static::configureCommonConformOptions($resolver);
+        static::configureCommonToOptions($resolver);
 
         $resolver->setDefaults(
             [
@@ -519,19 +355,19 @@ class Fn
         $resolver->setAllowedTypes('minValue', ['null', 'float', 'int']);
     }
 
-    protected static function configureConformToIntegerOptions(OptionsResolver $resolver)
+    protected static function configureToIntegerOptions(OptionsResolver $resolver)
     {
-        static::configureConformToFloatOptions($resolver);
+        static::configureToFloatOptions($resolver);
     }
 
-    protected static function configureConformToPlainTextOptions(OptionsResolver $resolver)
+    protected static function configureToPlainTextOptions(OptionsResolver $resolver)
     {
-        static::configureConformToStringOptions($resolver);
+        static::configureToStringOptions($resolver);
     }
 
-    protected static function configureConformToStringOptions(OptionsResolver $resolver)
+    protected static function configureToStringOptions(OptionsResolver $resolver)
     {
-        static::configureCommonConformOptions($resolver);
+        static::configureCommonToOptions($resolver);
 
         $resolver->setDefaults(
             [
@@ -546,30 +382,6 @@ class Fn
         $resolver->setAllowedTypes('compactWhitespace', 'boolean');
         $resolver->setAllowedTypes('maxLength', ['null', 'int']);
         $resolver->setAllowedTypes('trimWhitespace', 'boolean');
-    }
-
-    protected static function configureIsValidCreditCardNumberOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(
-            [
-                'CCType' => self::CCTYPE_VISA,
-                'performLuhnCheck' => true
-            ]
-        );
-
-        $resolver->setAllowedTypes('CCType', 'string');
-        $resolver->setAllowedTypes('performLuhnCheck', 'boolean');
-        $resolver->setAllowedValues(
-            'CCType',
-            [
-                self::CCTYPE_AMERICANEXPRESS,
-                self::CCTYPE_DINERSCLUB,
-                self::CCTYPE_JCB,
-                self::CCTYPE_MASTERCARD,
-                self::CCTYPE_VISA
-            ]
-        );
-        $resolver->setRequired(['CCType']);
     }
 
     protected static function doMakeDateTime(

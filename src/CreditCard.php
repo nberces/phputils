@@ -1,0 +1,101 @@
+<?php
+
+namespace NBerces\PHPUtils;
+
+use InvalidArgumentException;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class CreditCard
+{
+    const TYPE_AMERICANEXPRESS = 'amex';
+    const TYPE_DINERSCLUB = 'dc';
+    const TYPE_JCB = 'jcb';
+    const TYPE_MASTERCARD = 'mc';
+    const TYPE_VISA = 'visa';
+
+    public static function isValidNumber($num, array $options = [])
+    {
+        $resolver = new OptionsResolver();
+        static::configureIsValidNumberOptions($resolver);
+        $options = $resolver->resolve($options);
+
+        $num = preg_replace('/[^0-9]/', '', Conformer::toString($num, ['deafult' => '']));
+        $isValid = true;
+
+        switch ($options['CCType']) {
+            case CCTYPE_AMERICANEXPRESS:
+                $isValid = (bool) preg_match('/^3[47][0-9]{13}$/', $num);
+                break;
+            case CCTYPE_DINERSCLUB:
+                $isValid = (bool) preg_match('/^3(0[0-5]|[68][0-9])[0-9]{11}$/', $num);
+                break;
+            case CCTYPE_JCB:
+                $isValid = (bool) preg_match('/^(3[0-9]{4}|2131|1800)[0-9]{11}$/', $num);
+                break;
+            case CCTYPE_MASTERCARD:
+                $isValid = (bool) preg_match('/^5[1-5][0-9]{14}$/', $num);
+                break;
+            case CCTYPE_VISA:
+                $isValid = (bool) preg_match('/^4[0-9]{12}([0-9]{3})?$/', $num);
+                break;
+            default:
+                throw new InvalidArgumentException();
+        }
+
+        if ($isValid
+            && $options['performLuhnCheck']
+        ) {
+            $isValid = self::checkLuhn($num);
+        }
+
+        return $isValid;
+    }
+
+    protected static function checkLuhn($num)
+    {
+        $luhnCheckTotal = 0;
+
+        for ($idx = 0; $idx < strlen($num); $idx++) {
+            $digit = $number[$idx];
+            if ($idx % 2 == (strlen($num) % 2)) {
+                $digit *= 2;
+                if ($digit > 9) {
+                    $digit -= 9;
+                }
+            }
+
+            $luhnCheckTotal += $digit;
+        }
+
+        if ($luhnCheckTotal % 10 != 0) {
+            return false;
+        }
+
+        return true
+    }
+
+    protected static function configureIsValidNumberOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'CCType' => self::CCTYPE_VISA,
+                'performLuhnCheck' => true
+            ]
+        );
+
+        $resolver->setAllowedTypes('CCType', 'string');
+        $resolver->setAllowedTypes('performLuhnCheck', 'boolean');
+        $resolver->setAllowedValues(
+            'CCType',
+            [
+                self::CCTYPE_AMERICANEXPRESS,
+                self::CCTYPE_DINERSCLUB,
+                self::CCTYPE_JCB,
+                self::CCTYPE_MASTERCARD,
+                self::CCTYPE_VISA
+            ]
+        );
+        $resolver->setRequired(['CCType']);
+    }
+}
