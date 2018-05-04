@@ -263,8 +263,7 @@ class Conformer
         }
 
         if (!is_string($str)) {
-            $conformed[] = $options['default'];
-            return;
+            return $options['default'];
         }
 
         if (!empty($str)) {
