@@ -13,27 +13,27 @@ class DateTime extends BaseDateTime
     const FORMAT_TIMEAGO = '~';
     const FORMAT_SOLR = '~solr';
 
-    public static function toHtml5DateFormat(DateTime $date)
+    public static function toHtml5DateFormat(BaseDateTime $date)
     {
         return $date->format('Y-m-d');
     }
 
-    public static function toHtml5DateTimeFormat(DateTime $date)
+    public static function toHtml5DateTimeFormat(BaseDateTime $date)
     {
         return $date->format('Y-m-d\TH:i');
     }
 
-    public static function toMysqlDateTimeFormat(DateTime $date)
+    public static function toMysqlDateTimeFormat(BaseDateTime $date)
     {
         return $date->format('Y-m-d H:i:s');
     }
 
-    public static function toSolrDateTimeFormat(DateTime $date)
+    public static function toSolrDateTimeFormat(BaseDateTime $date)
     {
         return $date->format('Y-m-d\TH:i:s.z\Z');
     }
 
-    public static function toTimeAgoFormat(DateTime $date)
+    public static function toTimeAgoFormat(BaseDateTime $date)
     {
         $diff_seconds = time() - $date->format('U');
         $diff_weeks = floor($diff_seconds / 604800);

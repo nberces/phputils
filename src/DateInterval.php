@@ -6,7 +6,7 @@ use DateInterval as BaseDateInterval;
 
 class DateInterval extends BaseDateInterval
 {
-    public static function toSpecification(DateInterval $interval)
+    public static function toSpecification(BaseDateInterval $interval)
     {
         $dateElements = array_filter(
             [
