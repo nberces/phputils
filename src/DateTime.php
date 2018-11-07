@@ -3,37 +3,37 @@
 namespace NBerces\PHPUtils;
 
 use DateTime as BaseDateTime;
+use DateTimeInterface;
 
 class DateTime extends BaseDateTime
 {
     const FORMAT_HTML5_DATE = '~html5date';
     const FORMAT_HTML5_DATETIME = '~html5datetime';
     const FORMAT_MYSQL = '~mysql';
-    const FORMAT_RELATIVE = '~';
     const FORMAT_TIMEAGO = '~';
     const FORMAT_SOLR = '~solr';
 
-    public static function toHtml5DateFormat(BaseDateTime $date)
+    public static function toHtml5DateFormat(DateTimeInterface $date)
     {
         return $date->format('Y-m-d');
     }
 
-    public static function toHtml5DateTimeFormat(BaseDateTime $date)
+    public static function toHtml5DateTimeFormat(DateTimeInterface $date)
     {
         return $date->format('Y-m-d\TH:i');
     }
 
-    public static function toMysqlDateTimeFormat(BaseDateTime $date)
+    public static function toMysqlDateTimeFormat(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
     }
 
-    public static function toSolrDateTimeFormat(BaseDateTime $date)
+    public static function toSolrDateTimeFormat(DateTimeInterface $date)
     {
         return $date->format('Y-m-d\TH:i:s.z\Z');
     }
 
-    public static function toTimeAgoFormat(BaseDateTime $date)
+    public static function toTimeAgoFormat(DateTimeInterface $date)
     {
         $diff_seconds = time() - $date->format('U');
         $diff_weeks = floor($diff_seconds / 604800);
@@ -77,7 +77,6 @@ class DateTime extends BaseDateTime
                 return self::toHtml5DateTimeFormat($this);
             case self::FORMAT_MYSQL:
                 return self::toMysqlDateTimeFormat($this);
-            case self::FORMAT_RELATIVE:
             case self::FORMAT_TIMEAGO:
                 return self::toTimeAgoFormat($this);
             case self::FORMAT_SOLR:
