@@ -10,8 +10,8 @@ class DateTime extends BaseDateTime
     const FORMAT_HTML5_DATE = '~html5date';
     const FORMAT_HTML5_DATETIME = '~html5datetime';
     const FORMAT_MYSQL = '~mysql';
-    const FORMAT_TIMEAGO = '~';
     const FORMAT_SOLR = '~solr';
+    const FORMAT_TIMEAGO = '~';
 
     public static function toHtml5DateFormat(DateTimeInterface $date)
     {

@@ -8,6 +8,10 @@ use Exception;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class Conformer
+ * @package NBerces\PHPUtils
+ */
 class Conformer
 {
     public static function toBoolean($bool, array $options = [])
@@ -132,7 +136,7 @@ class Conformer
 
         if (is_numeric($num)) {
             try {
-                $num = (float) $num;
+                $num = (float)$num;
             } catch (Exception $e) {
                 ;
             }
@@ -145,13 +149,13 @@ class Conformer
         if (!is_null($options['maxValue'])
             && $num > $options['maxValue']
         ) {
-            $num = (float) $options['maxValue'];
+            $num = (float)$options['maxValue'];
         }
 
         if (!is_null($options['minValue'])
             && $num < $options['minValue']
         ) {
-            $num = (float) $options['minValue'];
+            $num = (float)$options['minValue'];
         }
 
         if (0 == $num
@@ -171,7 +175,7 @@ class Conformer
 
         if (is_numeric($num)) {
             try {
-                $num = (int) $num;
+                $num = (int)$num;
             } catch (Exception $e) {
                 ;
             }
@@ -184,13 +188,13 @@ class Conformer
         if (!is_null($options['maxValue'])
             && $num > $options['maxValue']
         ) {
-            $num = (int) $options['maxValue'];
+            $num = (int)$options['maxValue'];
         }
 
         if (!is_null($options['minValue'])
             && $num < $options['minValue']
         ) {
-            $num = (int) $options['minValue'];
+            $num = (int)$options['minValue'];
         }
 
         if (0 == $num
@@ -259,7 +263,7 @@ class Conformer
                 && method_exists($str, '__toString')
             )
         ) {
-            $str = (string) $str;
+            $str = (string)$str;
         }
 
         if (!is_string($str)) {
@@ -322,7 +326,6 @@ class Conformer
         $resolver->setNormalizer(
             'defaultTZ',
             function (Options $options, $value) {
-
                 if (is_string($value)) {
                     $value = new DateTimeZone($value);
                 }
