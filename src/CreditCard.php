@@ -12,11 +12,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class CreditCard
 {
-    const TYPE_AMERICANEXPRESS = 'amex';
-    const TYPE_DINERSCLUB = 'dc';
-    const TYPE_JCB = 'jcb';
-    const TYPE_MASTERCARD = 'mc';
-    const TYPE_VISA = 'visa';
+    public const TYPE_AMERICANEXPRESS = 'amex';
+    public const TYPE_DINERSCLUB = 'dc';
+    public const TYPE_JCB = 'jcb';
+    public const TYPE_MASTERCARD = 'mc';
+    public const TYPE_VISA = 'visa';
 
     public static function isValidNumber($num, array $options = [])
     {

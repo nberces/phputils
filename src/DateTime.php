@@ -7,11 +7,11 @@ use DateTimeInterface;
 
 class DateTime extends BaseDateTime
 {
-    const FORMAT_HTML5_DATE = '~html5date';
-    const FORMAT_HTML5_DATETIME = '~html5datetime';
-    const FORMAT_MYSQL = '~mysql';
-    const FORMAT_SOLR = '~solr';
-    const FORMAT_TIMEAGO = '~';
+    public const FORMAT_HTML5_DATE = '~html5date';
+    public const FORMAT_HTML5_DATETIME = '~html5datetime';
+    public const FORMAT_MYSQL = '~mysql';
+    public const FORMAT_SOLR = '~solr';
+    public const FORMAT_TIMEAGO = '~';
 
     public static function toHtml5DateFormat(DateTimeInterface $date)
     {
