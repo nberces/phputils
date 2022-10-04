@@ -107,7 +107,7 @@ class Conformer
         return $dttm;
     }
 
-    public static function toEmailAddress($address)
+    public static function toEmailAddress($address, array $options = [])
     {
         $resolver = new OptionsResolver();
         static::configureToEmailAddressOptions($resolver);

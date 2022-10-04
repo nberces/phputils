@@ -3,7 +3,6 @@
 namespace NBerces\PHPUtils;
 
 use InvalidArgumentException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
