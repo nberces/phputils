@@ -6,13 +6,13 @@ use DateInterval as BaseDateInterval;
 
 class DateInterval extends BaseDateInterval
 {
-    public static function toSpecification(BaseDateInterval $interval)
+    public static function toSpecification(BaseDateInterval $interval): string
     {
         $dateElements = array_filter(
             [
                 'Y' => $interval->y,
                 'M' => $interval->m,
-                'D' => $interval->d
+                'D' => $interval->d,
             ]
         );
 
@@ -20,7 +20,7 @@ class DateInterval extends BaseDateInterval
             [
                 'H' => $interval->h,
                 'M' => $interval->i,
-                'S' => $interval->s
+                'S' => $interval->s,
             ]
         );
 

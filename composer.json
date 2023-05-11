@@ -1,32 +1,31 @@
 {
-  "name": "nberces/phputils",
-  "type": "library",
-  "description": "A collection of utility classes to help with the day-to-day stuff.",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Nicolas Berces",
-      "email": "hello@nberces.dev"
+    "name": "nberces/phputils",
+    "type": "library",
+    "description": "A collection of utility classes to help with the day-to-day stuff.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Berces"
+        }
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": ">=7.1",
+        "symfony/options-resolver": "^4.0|^5.0|^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NBerces\\PHPUtils\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NBerces\\PHPUtilsTests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0"
     }
-  ],
-  "config": {
-    "sort-packages": true
-  },
-  "require": {
-    "php": ">=7.1",
-    "symfony/options-resolver": "^4.0|^5.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "NBerces\\PHPUtils\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "NBerces\\PHPUtilsTests\\": "tests/"
-    }
-  },
-  "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.0"
-  }
 }

@@ -17,14 +17,13 @@ class CreditCard
     public const TYPE_MASTERCARD = 'mc';
     public const TYPE_VISA = 'visa';
 
-    public static function isValidNumber($num, array $options = [])
+    public static function isValidNumber($num, array $options = []): bool
     {
         $resolver = new OptionsResolver();
         static::configureIsValidNumberOptions($resolver);
         $options = $resolver->resolve($options);
 
         $num = preg_replace('/[^0-9]/', '', Conformer::toString($num, ['deafult' => '']));
-        $isValid = true;
 
         switch ($options['CCType']) {
             case self::TYPE_AMERICANEXPRESS:
@@ -55,7 +54,7 @@ class CreditCard
         return $isValid;
     }
 
-    protected static function checkLuhn($num)
+    protected static function checkLuhn($num): bool
     {
         $luhnCheckTotal = 0;
 
@@ -83,7 +82,7 @@ class CreditCard
         $resolver->setDefaults(
             [
                 'CCType' => self::TYPE_VISA,
-                'performLuhnCheck' => true
+                'performLuhnCheck' => true,
             ]
         );
 
@@ -96,7 +95,7 @@ class CreditCard
                 self::TYPE_DINERSCLUB,
                 self::TYPE_JCB,
                 self::TYPE_MASTERCARD,
-                self::TYPE_VISA
+                self::TYPE_VISA,
             ]
         );
         $resolver->setRequired(['CCType']);

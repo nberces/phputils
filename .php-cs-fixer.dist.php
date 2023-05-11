@@ -15,12 +15,12 @@ $config
         [
             '@PSR12' => true,
             'array_syntax' => [
-                'syntax' => 'short'
+                'syntax' => 'short',
             ],
             'class_attributes_separation' => [
                 'elements' => [
-                    'method' => 'one'
-                ]
+                    'method' => 'one',
+                ],
             ],
             'ordered_class_elements' => [
                 'order' => [
@@ -43,15 +43,18 @@ $config
                     'phpunit',
                     'method_public',
                     'method_protected',
-                    'method_private'
+                    'method_private',
                 ],
-                'sort_algorithm' => 'alpha'
+                'sort_algorithm' => 'alpha',
             ],
             'ordered_imports' => [
-                'sort_algorithm' => 'alpha'
+                'sort_algorithm' => 'alpha',
             ],
             'phpdoc_order' => true,
-            'phpdoc_trim' => true
+            'phpdoc_trim' => true,
+            'trailing_comma_in_multiline' => [
+                'elements' => ['arrays'],
+            ],
         ]
     );
 

@@ -61,7 +61,6 @@ class Conformer
                     $options['defaultTZ']
                 );
             } catch (Exception $e) {
-                ;
             }
         } elseif (is_array($dttm)) {
             $day = 0;
@@ -91,7 +90,6 @@ class Conformer
                     $dttm->setDate($year, $month, $day);
                     $dttm->setTime($hour, $minute);
                 } catch (Exception $e) {
-                    ;
                 }
             }
         }
@@ -117,7 +115,7 @@ class Conformer
             [
                 'default' => '',
                 'maxLength' => 320,
-                'trimWhitespace' => true
+                'trimWhitespace' => true,
             ]
         );
 
@@ -138,7 +136,6 @@ class Conformer
             try {
                 $num = (float)$num;
             } catch (Exception $e) {
-                ;
             }
         }
 
@@ -177,7 +174,6 @@ class Conformer
             try {
                 $num = (int)$num;
             } catch (Exception $e) {
-                ;
             }
         }
 
@@ -299,7 +295,7 @@ class Conformer
     {
         $resolver->setDefaults(
             [
-                'default' => null
+                'default' => null,
             ]
         );
     }
@@ -316,7 +312,7 @@ class Conformer
         $resolver->setDefaults(
             [
                 'defaultTZ' => new DateTimeZone('UTC'),
-                'format' => null
+                'format' => null,
             ]
         );
 
@@ -348,7 +344,7 @@ class Conformer
             [
                 'allowZero' => true,
                 'maxValue' => null,
-                'minValue' => null
+                'minValue' => null,
             ]
         );
 
@@ -376,7 +372,7 @@ class Conformer
                 'allowEmpty' => true,
                 'compactWhitespace' => false,
                 'maxLength' => null,
-                'trimWhitespace' => false
+                'trimWhitespace' => false,
             ]
         );
 
@@ -389,7 +385,7 @@ class Conformer
     protected static function doMakeDateTime(
         $time = 'now',
         DateTimeZone $timezone = null
-    ) {
+    ): DateTime {
         return new DateTime($time, $timezone);
     }
 }
