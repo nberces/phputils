@@ -278,7 +278,7 @@ class Conformer
             if (!is_null($options['maxLength'])
                 && 0 < $options['maxLength']
             ) {
-                $str = substr($str, 0, $options['maxLength']);
+                $str = mb_substr($str, 0, $options['maxLength']);
             }
         }
 

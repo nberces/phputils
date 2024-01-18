@@ -58,9 +58,9 @@ class CreditCard
     {
         $luhnCheckTotal = 0;
 
-        for ($idx = 0; $idx < strlen($num); $idx++) {
+        for ($idx = 0; $idx < mb_strlen($num); $idx++) {
             $digit = $num[$idx];
-            if ($idx % 2 == (strlen($num) % 2)) {
+            if ($idx % 2 == (mb_strlen($num) % 2)) {
                 $digit *= 2;
                 if ($digit > 9) {
                     $digit -= 9;
